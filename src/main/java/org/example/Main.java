@@ -1,9 +1,9 @@
 package org.example;
 
-import org.example.apiIntegration.ApiIntegration;
+import org.example.apiInteraction.ApiInteraction;
 
 public class Main {
     static void main() {
-        ApiIntegration apiIntegration = new ApiIntegration();
+        ApiInteraction apiIntegration = new ApiInteraction();
     }
 }
