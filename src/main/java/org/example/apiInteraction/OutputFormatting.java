@@ -84,8 +84,8 @@ public class OutputFormatting {
         var sb = new StringBuilder();
 
         while (matcher.find()) {
-            String key = matcher.group(1);
-            Object val = contextMap.get(key);
+            String path = matcher.group(1);
+            Object val = getNestedValue(contextMap, path);
 
             String replacement = (val != null) ? String.valueOf(val) : "";
             matcher.appendReplacement(sb, Matcher.quoteReplacement(replacement));
@@ -95,5 +95,18 @@ public class OutputFormatting {
         return sb.toString();
     }
 
+    private static Object getNestedValue(Map<?, ?> map, String path) {
+        String[] keys = path.split("\\.");
+        Object current = map;
+
+        for (String key : keys) {
+            if (current instanceof Map<?, ?> currentMap) {
+                current = currentMap.get(key);
+            } else {
+                return null;
+            }
+        }
+        return current;
+    }
 
 }

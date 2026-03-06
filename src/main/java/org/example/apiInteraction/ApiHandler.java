@@ -51,8 +51,6 @@ public class ApiHandler {
             }
 
             HttpRequest request = requestBuilder.GET().build();
-
-
             response = client.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (IOException | InterruptedException e) {
             System.out.println("Error: " + e.getMessage());
