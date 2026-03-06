@@ -2,6 +2,7 @@ package org.example.apiInteraction;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.net.http.HttpResponse;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.function.Function;
@@ -22,7 +23,7 @@ public final class ApiRecord {
     @JsonProperty("additional_paths")
     private String[] additionalPaths;
 
-    private Function<String[], String> handler; // set later
+    private Function<String[], HttpResponse<String>> handler; // set later
 
     public ApiRecord() {} // for jackson's objectMapper to work (same thing for the setters)
 
@@ -54,7 +55,7 @@ public final class ApiRecord {
         return additionalPaths;
     }
 
-    public Function<String[], String> handler() {
+    public Function<String[], HttpResponse<String>> handler() {
         return handler;
     }
 
@@ -86,7 +87,7 @@ public final class ApiRecord {
         this.additionalPaths = additionalPaths;
     }
 
-    public void setHandler(Function<String[], String> handler) {
+    public void setHandler(Function<String[], HttpResponse<String>> handler) {
         this.handler = handler;
     }
 
@@ -121,6 +122,6 @@ public final class ApiRecord {
                 "baseRequestURL=" + baseRequestURL + ", " +
                 "additionalPathNeeded=" + additionalPathNeeded + ", " +
                 "additionalPaths=" + Arrays.toString(additionalPaths) + ", " +
-                "handler=" + handler + ']';
+                "handler=" + handler + "]";
     }
 }
