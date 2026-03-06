@@ -23,6 +23,8 @@ public class ApiInteraction {
 
     public void interact() {
         for (ApiRecord api : apis) {
+            System.out.println("Api " + (api.id() + 1) + ", " + api.name() + ":");
+
             ApiHandler handler = new ApiHandler(api);
             HttpResponse<String> response = handler.getResponse();
 
@@ -33,7 +35,6 @@ public class ApiInteraction {
                     System.out.println("Response code non-200: " + response.statusCode());
                 } else {
                     OutputFormatting outputFormatting = new OutputFormatting(BASE_FILE_PATH + "outputFormat_" + api.id() + ".txt", response.body());
-                    System.out.println("Api " + (api.id() + 1) + ", " + api.name() + ":");
                     System.out.println(outputFormatting.format() + "\n");
                 }
             }

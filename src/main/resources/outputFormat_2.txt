@@ -1,0 +1,10 @@
+Result: {result}
+Last update (UTC): {time_last_update_utc}
+Next update (UTC): {time_next_update_utc}
+Base: {base_code}
+Conversion rates:
+- USD: {conversion_rates.USD}
+- AUD: {conversion_rates.AUD}
+- GBP: {conversion_rates.GBP}
+- RUB: {conversion_rates.RUB}
+- EUR: {conversion_rates.EUR}
