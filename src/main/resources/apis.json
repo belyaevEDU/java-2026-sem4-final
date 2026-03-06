@@ -1,0 +1,26 @@
+[
+  {
+    "id": 0,
+    "name": "Mock addresses",
+    "key_needed": false,
+    "base_request_url": "https://fakerapi.it/api/v2/addresses/",
+    "additional_path_needed": false
+  },
+  {
+    "id": 1,
+    "name": "The Movie Database",
+    "key_needed": true,
+    "API_KEY": "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3MDljZjBlYTJkNzUzNGZhZmE5NGEyOTFlMzYwY2IyYyIsIm5iZiI6MTc1NTcxMjgyOC43ODEsInN1YiI6IjY4YTYwZDNjYTIzOTUyYmViMGJjYjZlNyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.sW-qidhgJNR1yUCOGTboFZXkxiabENFk7cVcSbzu-J4",
+    "base_request_url": "https://api.themoviedb.org/3/movie/",
+    "additional_path_needed": true,
+    "additional_paths": ["popular", "now_playing", "top_rated", "upcoming"]
+  },
+  {
+    "id": 2,
+    "name": "ExchangeRate API",
+    "key_needed": false,
+    "base_request_url": "https://v6.exchangerate-api.com/v6/d2b4d7097e544160bb0208c4/latest/",
+    "additional_path_needed": true,
+    "additional_paths": ["USD", "EUR", "RUB"]
+  }
+]
