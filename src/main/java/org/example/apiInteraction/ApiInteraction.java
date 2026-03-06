@@ -4,20 +4,16 @@ import tools.jackson.databind.ObjectMapper;
 
 import java.io.File;
 import java.net.http.HttpResponse;
-import java.util.Arrays;
-import java.util.Comparator;
 
 public class ApiInteraction {
     private final ApiRecord[] apis;
     private final String BASE_FILE_PATH = "src/main/resources/";
     private final String FILE_PATH = BASE_FILE_PATH + "apis.json";
 
-
     public ApiInteraction() {
         ApiRecord[] apisTemp;
         ObjectMapper objectMapper = new ObjectMapper();
         apisTemp = objectMapper.readValue(new File(this.FILE_PATH), ApiRecord[].class);
-        //this.apis = Arrays.stream(apisTemp).sorted(Comparator.comparingInt(ApiRecord::id)).toArray(ApiRecord[]::new);
         this.apis = apisTemp;
     }
 
@@ -38,7 +34,6 @@ public class ApiInteraction {
                     System.out.println(outputFormatting.format() + "\n");
                 }
             }
-
         }
     }
 }
