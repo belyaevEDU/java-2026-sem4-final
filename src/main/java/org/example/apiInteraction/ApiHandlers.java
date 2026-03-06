@@ -47,7 +47,7 @@ public class ApiHandlers {
 
             response = client.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (IOException | InterruptedException e) {
-            //throw new RuntimeException(e);
+            System.out.println("Error: " + e.getMessage());
         }
 
         return response;
