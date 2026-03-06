@@ -13,7 +13,11 @@
     "API_KEY": "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3MDljZjBlYTJkNzUzNGZhZmE5NGEyOTFlMzYwY2IyYyIsIm5iZiI6MTc1NTcxMjgyOC43ODEsInN1YiI6IjY4YTYwZDNjYTIzOTUyYmViMGJjYjZlNyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.sW-qidhgJNR1yUCOGTboFZXkxiabENFk7cVcSbzu-J4",
     "base_request_url": "https://api.themoviedb.org/3/movie/",
     "additional_path_needed": true,
-    "additional_paths": ["popular", "now_playing", "top_rated", "upcoming"]
+    "additional_paths": ["popular", "now_playing", "top_rated", "upcoming"],
+    "headers": {
+      "accept": "application/json",
+      "Authorization": "Bearer "
+    }
   },
   {
     "id": 2,

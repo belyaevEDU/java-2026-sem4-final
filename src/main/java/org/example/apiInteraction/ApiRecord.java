@@ -2,10 +2,9 @@ package org.example.apiInteraction;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.net.http.HttpResponse;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Objects;
-import java.util.function.Function;
 
 public final class ApiRecord {
     @JsonProperty("id")
@@ -22,8 +21,8 @@ public final class ApiRecord {
     private boolean additionalPathNeeded;
     @JsonProperty("additional_paths")
     private String[] additionalPaths;
-
-    private Function<String[], HttpResponse<String>> handler; // set later
+    @JsonProperty("headers")
+    private Map<String, String> headers;
 
     public ApiRecord() {} // for jackson's objectMapper to work (same thing for the setters)
 
@@ -55,8 +54,8 @@ public final class ApiRecord {
         return additionalPaths;
     }
 
-    public Function<String[], HttpResponse<String>> handler() {
-        return handler;
+    public Map<String, String> headers() {
+        return headers;
     }
 
     public void setId(int id) {
@@ -87,8 +86,8 @@ public final class ApiRecord {
         this.additionalPaths = additionalPaths;
     }
 
-    public void setHandler(Function<String[], HttpResponse<String>> handler) {
-        this.handler = handler;
+    public void setHeaders(Map<String, String> headers) {
+        this.headers = headers;
     }
 
     // 3 functions below gen'd by IDEA
@@ -104,12 +103,12 @@ public final class ApiRecord {
                 Objects.equals(this.baseRequestURL, that.baseRequestURL) &&
                 this.additionalPathNeeded == that.additionalPathNeeded &&
                 Objects.equals(this.additionalPaths, that.additionalPaths) &&
-                Objects.equals(this.handler, that.handler);
+                Objects.equals(this.headers, that.headers);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, keyNeeded, apiKey, baseRequestURL, additionalPathNeeded, Arrays.hashCode(additionalPaths), handler);
+        return Objects.hash(id, name, keyNeeded, apiKey, baseRequestURL, additionalPathNeeded, Arrays.hashCode(additionalPaths), headers);
     }
 
     @Override
@@ -121,7 +120,6 @@ public final class ApiRecord {
                 "apiKey=" + apiKey + ", " +
                 "baseRequestURL=" + baseRequestURL + ", " +
                 "additionalPathNeeded=" + additionalPathNeeded + ", " +
-                "additionalPaths=" + Arrays.toString(additionalPaths) + ", " +
-                "handler=" + handler + "]";
+                "additionalPaths=" + Arrays.toString(additionalPaths) + "]";
     }
 }

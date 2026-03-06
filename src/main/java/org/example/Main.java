@@ -4,6 +4,7 @@ import org.example.apiInteraction.ApiInteraction;
 
 public class Main {
     static void main() {
-        ApiInteraction apiIntegration = new ApiInteraction();
+        ApiInteraction apiInteraction = new ApiInteraction();
+        apiInteraction.interact();
     }
 }

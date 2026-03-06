@@ -1,0 +1,9 @@
+\ ARRAY results
+Title: {title}
+Overview: {overview}
+Original language: {original_language}
+Popularity: {popularity}
+Vote average: {vote_average}
+Release date: {release_date}
+
+\
