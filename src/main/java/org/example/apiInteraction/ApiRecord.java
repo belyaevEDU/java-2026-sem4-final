@@ -113,13 +113,6 @@ public final class ApiRecord {
 
     @Override
     public String toString() {
-        return "ApiRecord[" +
-                "id=" + id + ", " +
-                "name=" + name + ", " +
-                "keyNeeded=" + keyNeeded + ", " +
-                "apiKey=" + apiKey + ", " +
-                "baseRequestURL=" + baseRequestURL + ", " +
-                "additionalPathNeeded=" + additionalPathNeeded + ", " +
-                "additionalPaths=" + Arrays.toString(additionalPaths) + "]";
+        return "ID: " + this.id + ", name: " + this.name;
     }
 }

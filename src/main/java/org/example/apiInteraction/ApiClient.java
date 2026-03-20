@@ -18,6 +18,8 @@ public class ApiInteraction {
     }
 
     public void interact() {
+
+
         for (ApiRecord api : apis) {
             System.out.println("Api " + (api.id() + 1) + ", " + api.name() + ":");
 
@@ -35,5 +37,9 @@ public class ApiInteraction {
                 }
             }
         }
+    }
+
+    private void interactiveMode() {
+        
     }
 }
