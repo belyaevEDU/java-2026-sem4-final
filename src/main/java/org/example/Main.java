@@ -1,10 +1,10 @@
 package org.example;
 
-import org.example.apiInteraction.ApiInteraction;
+import org.example.apiInteraction.ApiClient;
 
 public class Main {
     static void main() {
-        ApiInteraction apiInteraction = new ApiInteraction();
-        apiInteraction.interact();
+        ApiClient apiClient = new ApiClient();
+        apiClient.call();
     }
 }
