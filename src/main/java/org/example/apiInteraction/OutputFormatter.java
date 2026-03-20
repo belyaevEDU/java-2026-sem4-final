@@ -12,12 +12,12 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class OutputFormatting {
+public class OutputFormatter {
     private final Pattern PLACEHOLDER_PATTERN;
     private final String outputFormatFile;
     private String dataIn;
 
-    public OutputFormatting(String outputFormatFile, String dataIn) {
+    public OutputFormatter(String outputFormatFile, String dataIn) {
         this.PLACEHOLDER_PATTERN = Pattern.compile("\\{([^}]+)\\}");
         this.outputFormatFile = outputFormatFile;
         this.dataIn = dataIn;

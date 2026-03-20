@@ -5,19 +5,20 @@ import tools.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.net.http.HttpResponse;
 
-public class ApiInteraction {
+public class ApiClient {
     private final ApiRecord[] apis;
+    private final InteractiveUtils interactiveUtils;
     private final String BASE_FILE_PATH = "src/main/resources/";
     private final String FILE_PATH = BASE_FILE_PATH + "apis.json";
 
-    public ApiInteraction() {
-        ApiRecord[] apisTemp;
+    public ApiClient() {
         ObjectMapper objectMapper = new ObjectMapper();
-        apisTemp = objectMapper.readValue(new File(this.FILE_PATH), ApiRecord[].class);
-        this.apis = apisTemp;
+        this.apis = objectMapper.readValue(new File(this.FILE_PATH), ApiRecord[].class);
+
+        interactiveUtils = new InteractiveUtils(this.apis);
     }
 
-    public void interact() {
+    public void call() {
 
 
         for (ApiRecord api : apis) {
@@ -32,7 +33,7 @@ public class ApiInteraction {
                 if (response.statusCode() != 200) {
                     System.out.println("Response code non-200: " + response.statusCode());
                 } else {
-                    OutputFormatting outputFormatting = new OutputFormatting(BASE_FILE_PATH + "outputFormat_" + api.id() + ".txt", response.body());
+                    OutputFormatter outputFormatting = new OutputFormatter(BASE_FILE_PATH + "outputFormat_" + api.id() + ".txt", response.body());
                     System.out.println(outputFormatting.format() + "\n");
                 }
             }
@@ -40,6 +41,15 @@ public class ApiInteraction {
     }
 
     private void interactiveMode() {
-        
+        final String apiSelectionAskMessage = "\nSelect by ID which APIs to call (\"all\" for all of them; can do several, ex.: 12): ";
+        final String outputApiSelectAskMessage = "\nSelect by ID which API responses to print (\"all\" for all of them; can do several): ";
+
+        int[] apiIDs = this.interactiveUtils.askUserForApis(apiSelectionAskMessage);
+        boolean appendToFile = this.interactiveUtils.askUserWhetherToAppend(); // if 1 append, if 0 re-write
+        int[] outputApiIDs = this.interactiveUtils.askUserForApis(outputApiSelectAskMessage);
+
+        // ask user for formatting file name. have "default" option
+
+
     }
 }
