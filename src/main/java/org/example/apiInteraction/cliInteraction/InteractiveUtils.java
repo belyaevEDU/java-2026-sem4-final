@@ -1,11 +1,11 @@
-package org.example.apiInteraction.CliInteraction;
+package org.example.apiInteraction.cliInteraction;
 
-import org.example.apiInteraction.ApiRecord;
+import org.example.apiInteraction.RunArgs;
+import org.example.apiInteraction.apiHandling.ApiRecord;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Arrays;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -63,11 +63,65 @@ public class InteractiveUtils {
         return array;
     }
 
-    public boolean askUserWhetherToAppend() {
+    public int[] askUserForApis(String askMessage, int[] filter) {
+        final String allApisUserResponse = "all";
+        final String noApiUserResponse = "none";
+
         boolean done = false;
         Scanner scanner = new Scanner(System.in);
 
-        boolean result = false;
+        int[] array = new int[]{};
+
+        while (!done) {
+            System.out.println("APIs:");
+            for (ApiRecord api : apis) {
+                if (Arrays.stream(filter).allMatch(e -> e != api.id())) {
+                    continue;
+                }
+                System.out.println(api);
+            }
+
+            System.out.print(askMessage);
+            String userInput = scanner.nextLine();
+
+            if (userInput.isEmpty()) {
+                System.out.println("Error: user input is empty.\n");
+                continue;
+            }
+
+            if (userInput.equals(allApisUserResponse)) {
+                array = new int[this.apis.length];
+                for (int i = 0; i < this.apis.length; i++) {
+                    array[i] = i;
+                }
+                done = true;
+                continue;
+            } else if (userInput.equals(noApiUserResponse)) {
+                array = new int[]{};
+                done = true;
+                continue;
+            }
+
+            array = new int[userInput.length()];
+            char[] charArray = userInput.toCharArray();
+            try {
+                for (int i = 0; i < userInput.length(); i++) {
+                    array[i] = Integer.parseInt(String.valueOf(charArray[i]));
+                }
+                done = true;
+            } catch (NumberFormatException e) {
+                System.out.println("Error: non-numeric input.\n");
+            }
+        }
+
+        return array;
+    }
+
+    public WriteMode askUserWhetherToAppend() {
+        boolean done = false;
+        Scanner scanner = new Scanner(System.in);
+
+        WriteMode result = null;
 
         while (!done) {
             System.out.println("0: Rewrite the entire file");
@@ -87,7 +141,11 @@ public class InteractiveUtils {
                     continue;
                 }
 
-                result = resShort == 1;
+                if (resShort == 0) {
+                    result = WriteMode.OVERWRITE;
+                } else {
+                    result = WriteMode.APPEND;
+                }
                 done = true;
             } catch (NumberFormatException exception) {
                 System.out.println(exception.getMessage());
@@ -96,85 +154,41 @@ public class InteractiveUtils {
         return result;
     }
 
-    public boolean toSpecifyFormattingFile() {
-        boolean res = false;
+    public RunArgs.FileType askUserForFileType() {
         boolean done = false;
         Scanner scanner = new Scanner(System.in);
 
-        while (!done) {
-            System.out.print("Specify formatting file path? (yes/no, no leaves default): ");
-
-            String userInput = scanner.nextLine().strip().toLowerCase();
-
-            switch (userInput) {
-                case "no":
-                    // res already false
-                    done = true;
-                    break;
-                case "yes":
-                    res = true;
-                    done = true;
-                    break;
-                default:
-                    System.out.println("Unacceptable response.\n");
-                    break;
-            }
-        }
-
-        return res;
-    }
-
-    public String askUserForFormattingFile(int id) {
-        boolean done = false;
-        Scanner scanner = new Scanner(System.in);
-
-        String path = "";
-
-        System.out.println("API " + id + ": ");
-        while (!done) {
-            System.out.print("Enter the name of the file in resources folder containing formatting: ");
-
-            String userInput = scanner.nextLine().strip();
-            path = userInput;
-
-            if (Files.exists(Path.of(BASE_FILE_PATH + path))) {
-                done = true;
-            } else {
-                System.out.println("File doesn't exist.\n");
-            }
-        }
-
-        return path;
-    }
-
-    public boolean askUserWhetherInteractive() {
-        boolean res = false;
-        boolean done = false;
-        Scanner scanner = new Scanner(System.in);
+        RunArgs.FileType result = null;
 
         while (!done) {
-            System.out.println("1. Automatic");
-            System.out.println("2. Interactive");
-            System.out.print("Automatic or interactive: ");
+            System.out.println("0: JSON");
+            System.out.println("1: CSV\n");
+            System.out.print("Choose file type: ");
 
             String userInput = scanner.nextLine();
+            if (userInput.length() != 1) {
+                System.out.println("Error: unacceptable user response");
+                continue;
+            }
 
-            switch (userInput) {
-                case "1":
-                    // res already false
-                    done = true;
-                    break;
-                case "2":
-                    res = true;
-                    done = true;
-                    break;
-                default:
-                    System.out.println("Unacceptable response.\n");
-                    break;
+            try {
+                short resShort = Short.parseShort(userInput);
+                if (resShort < 0 || resShort > 1) {
+                    System.out.println("Error: out of bounds");
+                    continue;
+                }
+
+                if (resShort == 0) {
+                    result = RunArgs.FileType.JSON;
+                } else {
+                    result = RunArgs.FileType.CSV;
+                }
+                done = true;
+            } catch (NumberFormatException exception) {
+                System.out.println(exception.getMessage());
             }
         }
-
-        return res;
+        return result;
     }
 
     public String askUserForAdditionalPath(ApiRecord apiRecord) {
@@ -182,7 +196,7 @@ public class InteractiveUtils {
 
         int index = 0;
 
-        System.out.println("Pick a path: ");
+        System.out.println("Pick a path (" + apiRecord.name() + "):");
         for (int i = 0; i < paths.length; i++) {
             System.out.println((i + 1) + ": " + paths[i]);
         }
@@ -214,22 +228,4 @@ public class InteractiveUtils {
         return paths[index];
     }
 
-    public Map<Integer, String> getIdsToFormattingFileFromUser(int[] apiIDs) {
-        final String defaultFormattingFile = "outputFormat_%d.txt";
-
-        Map<Integer, String> idToFormattingFile = new HashMap<>();
-
-        if (this.toSpecifyFormattingFile()) {
-            for (int id : apiIDs) {
-                String formatFileName = this.askUserForFormattingFile(id);
-                idToFormattingFile.put(id, formatFileName);
-            }
-        } else {
-            for (int id : apiIDs) {
-                idToFormattingFile.put(id, String.format(defaultFormattingFile, id));
-            }
-        }
-
-        return idToFormattingFile;
-    }
 }

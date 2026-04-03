@@ -1,4 +1,4 @@
-package org.example.apiInteraction;
+package org.example.apiInteraction.apiHandling;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

@@ -1,4 +1,6 @@
-package org.example.apiInteraction;
+package org.example.apiInteraction.apiHandling;
+
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.net.URI;
@@ -7,8 +9,6 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Random;
-import java.util.Scanner;
 
 public class ApiHandler {
     private final ApiRecord apiRecord;
@@ -17,14 +17,14 @@ public class ApiHandler {
         this.apiRecord = apiRecord;
     }
 
-    public HttpResponse<String> getResponse(Optional<String> additionalPath) {
+    public HttpResponse<String> getResponse(@Nullable String additionalPath) {
         String url = apiRecord.baseRequestURL();
         if (this.apiRecord.additionalPathNeeded()) {
-            if (additionalPath.isEmpty()) {
+            if (additionalPath == null) {
                 throw new IllegalArgumentException("additional path needed " +
                         "and optional of additional path passed is empty");
             }
-            url += additionalPath.get();
+            url += additionalPath;
         }
 
         HttpResponse<String> response = null;
