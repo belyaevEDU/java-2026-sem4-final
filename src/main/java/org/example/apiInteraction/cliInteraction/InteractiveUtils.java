@@ -9,7 +9,6 @@ import java.util.Scanner;
 
 public class InteractiveUtils {
     private final ApiRecord[] apis;
-    private final String BASE_FILE_PATH = "src/main/resources/";
 
     public InteractiveUtils(ApiRecord[] apis) {
         this.apis = apis;
@@ -82,22 +81,24 @@ public class InteractiveUtils {
             System.out.print(askMessage);
             String userInput = scanner.nextLine();
 
-            if (userInput.isEmpty()) {
-                System.out.println("Error: user input is empty.\n");
-                continue;
-            }
-
-            if (userInput.equals(allApisUserResponse)) {
-                array = new int[this.apis.length];
-                for (int i = 0; i < this.apis.length; i++) {
-                    array[i] = i;
+            switch (userInput) {
+                case "" -> {
+                    System.out.println("Error: user input is empty.\n");
+                    continue;
                 }
-                done = true;
-                continue;
-            } else if (userInput.equals(noApiUserResponse)) {
-                array = new int[]{};
-                done = true;
-                continue;
+                case allApisUserResponse -> {
+                    array = new int[this.apis.length];
+                    for (int i = 0; i < this.apis.length; i++) {
+                        array[i] = i;
+                    }
+                    done = true;
+                    continue;
+                }
+                case noApiUserResponse -> {
+                    array = new int[]{};
+                    done = true;
+                    continue;
+                }
             }
 
             array = new int[userInput.length()];

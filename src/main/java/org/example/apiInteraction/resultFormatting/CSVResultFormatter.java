@@ -5,7 +5,6 @@ import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.node.ObjectNode;
 
-import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -23,7 +22,7 @@ public class CSVResultFormatter implements CustomFormatter {
 
 
     @Override
-    public String format(String jsonPayload, String existingContent) throws IOException {
+    public String format(String jsonPayload, String existingContent) {
         CsvData existing = parseExisting(existingContent);
 
         int nextId = maxId(existing.rows()) + 1;
@@ -70,7 +69,7 @@ public class CSVResultFormatter implements CustomFormatter {
                 if (childRows.size() == 1) {
                     // non-expanding field: merge into every current row
                     for (LinkedHashMap<String, String> row : result) {
-                        row.putAll(childRows.get(0));
+                        row.putAll(childRows.getFirst());
                     }
                 } else {
                     // array expansion: cross-product existing rows * child rows
@@ -105,7 +104,7 @@ public class CSVResultFormatter implements CustomFormatter {
                 // primitive array: collapse into a single "|"-delimited cell
                 StringJoiner joiner = new StringJoiner("|");
                 for (JsonNode elem : node) {
-                    joiner.add(elem.isNull() ? "" : elem.asText());
+                    joiner.add(elem.isNull() ? "" : elem.asString());
                 }
                 LinkedHashMap<String, String> row = new LinkedHashMap<>();
                 row.put(prefix, joiner.toString());
@@ -115,7 +114,7 @@ public class CSVResultFormatter implements CustomFormatter {
         } else {
             // primitive or null
             LinkedHashMap<String, String> row = new LinkedHashMap<>();
-            row.put(prefix, node.isNull() ? "" : node.asText());
+            row.put(prefix, node.isNull() ? "" : node.asString());
             return List.of(row);
         }
     }

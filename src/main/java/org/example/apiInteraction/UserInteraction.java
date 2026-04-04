@@ -23,11 +23,11 @@ public class UserInteraction {
     private final ApiRecord[] apis;
     private final InteractiveUtils interactiveUtils;
     private final String BASE_FILE_PATH = "src/main/resources/";
-    private final String FILE_PATH = BASE_FILE_PATH + "apis.json";
 
     public UserInteraction() {
         ObjectMapper objectMapper = new ObjectMapper();
-        this.apis = objectMapper.readValue(new File(this.FILE_PATH), ApiRecord[].class);
+        String FILE_PATH = BASE_FILE_PATH + "apis.json";
+        this.apis = objectMapper.readValue(new File(FILE_PATH), ApiRecord[].class);
 
         interactiveUtils = new InteractiveUtils(this.apis);
     }

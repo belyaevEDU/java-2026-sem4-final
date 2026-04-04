@@ -9,7 +9,6 @@ import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.databind.node.ArrayNode;
 import tools.jackson.databind.node.ObjectNode;
 
-import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -29,7 +28,7 @@ public class JSONResultFormatter implements CustomFormatter {
     }
 
 
-    public String format(String jsonPayload, String existingContent) throws IOException {
+    public String format(String jsonPayload, String existingContent) {
         List<ObjectNode> records = parseExisting(existingContent);
 
         int nextId = maxId(records) + 1;
@@ -44,12 +43,13 @@ public class JSONResultFormatter implements CustomFormatter {
         this.sourceName = sourceName;
     }
 
-    private List<ObjectNode> parseExisting(String content) throws IOException {
+    private List<ObjectNode> parseExisting(String content) {
         if (content == null || content.isBlank()) {
             return new ArrayList<>();
         }
         ArrayNode array = (ArrayNode) mapper.readTree(content);
-        return mapper.convertValue(array, new TypeReference<List<ObjectNode>>() {});
+        return mapper.convertValue(array, new TypeReference<>() {
+        });
     }
 
     private int maxId(@NotNull List<ObjectNode> records) {

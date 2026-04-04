@@ -38,7 +38,7 @@ public final class ApiRecord {
         return keyNeeded;
     }
 
-    protected String apiKey() {
+    String apiKey() {
         return apiKey;
     }
 
