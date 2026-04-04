@@ -8,7 +8,7 @@ import org.example.apiInteraction.RunArgs.*;
 import java.util.Locale;
 
 public class Main {
-    static void main(@NotNull String[] args) {
+    static void main(String @NotNull [] args) {
         // possible args:
         // type (optional)format
 

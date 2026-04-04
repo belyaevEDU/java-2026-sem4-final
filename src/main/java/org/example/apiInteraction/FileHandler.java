@@ -3,7 +3,7 @@ package org.example.apiInteraction;
 import java.io.*;
 import java.nio.file.Files;
 
-public class FileHandler {
+public final class FileHandler {
     private final File file;
 
     public FileHandler(String filePath) {
