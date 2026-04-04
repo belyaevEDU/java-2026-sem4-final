@@ -69,7 +69,8 @@ public class UserInteraction {
             try {
                 currentContent = resultFileHandler.read();
             } catch (IOException e) {
-                System.out.println("ERROR reading existing file: " + e.getMessage());
+                System.out.println("ERROR: couldn't read file: " + e.getMessage());
+                return;
             }
         }
 
@@ -116,6 +117,7 @@ public class UserInteraction {
                 currentContent = formatted;
             } catch (IOException e) {
                 System.out.println("ERROR: " + e.getMessage());
+                return;
             }
 
             // only interactive has cli result output

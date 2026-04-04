@@ -56,7 +56,6 @@ public class CSVResultFormatter implements CustomFormatter {
     }
 
     private List<LinkedHashMap<String, String>> flattenNode(@NotNull JsonNode node, String prefix) {
-
         if (node.isObject()) {
             List<LinkedHashMap<String, String>> result = new ArrayList<>();
             result.add(new LinkedHashMap<>());
@@ -69,12 +68,12 @@ public class CSVResultFormatter implements CustomFormatter {
                 List<LinkedHashMap<String, String>> childRows = flattenNode(entry.getValue(), childPath);
 
                 if (childRows.size() == 1) {
-                    // Non-expanding field: merge into every current row
+                    // non-expanding field: merge into every current row
                     for (LinkedHashMap<String, String> row : result) {
                         row.putAll(childRows.get(0));
                     }
                 } else {
-                    // Array expansion: cross-product existing rows × child rows
+                    // array expansion: cross-product existing rows * child rows
                     List<LinkedHashMap<String, String>> next =
                             new ArrayList<>(result.size() * childRows.size());
                     for (LinkedHashMap<String, String> existingRow : result) {
@@ -96,14 +95,14 @@ public class CSVResultFormatter implements CustomFormatter {
             }
 
             if (hasComplexElements) {
-                // Object array: explode - each element contributes its own rows
+                // object array: explode - each element contributes its own rows
                 List<LinkedHashMap<String, String>> rows = new ArrayList<>();
                 for (JsonNode element : node) {
                     rows.addAll(flattenNode(element, prefix));
                 }
                 return rows;
             } else {
-                // Primitive array: collapse into a single "|"-delimited cell
+                // primitive array: collapse into a single "|"-delimited cell
                 StringJoiner joiner = new StringJoiner("|");
                 for (JsonNode elem : node) {
                     joiner.add(elem.isNull() ? "" : elem.asText());
@@ -114,7 +113,7 @@ public class CSVResultFormatter implements CustomFormatter {
             }
 
         } else {
-            // Primitive or null
+            // primitive or null
             LinkedHashMap<String, String> row = new LinkedHashMap<>();
             row.put(prefix, node.isNull() ? "" : node.asText());
             return List.of(row);
@@ -161,12 +160,10 @@ public class CSVResultFormatter implements CustomFormatter {
     private @NotNull String serializeCsv(@NotNull List<String> headers, @NotNull List<Map<String, String>> rows) {
         StringBuilder sb = new StringBuilder();
 
-        // Header line
         StringJoiner headerLine = new StringJoiner(",");
         headers.forEach(h -> headerLine.add(escapeCsv(h)));
         sb.append(headerLine).append("\n");
 
-        // Data rows — missing columns become empty strings
         for (Map<String, String> row : rows) {
             StringJoiner dataLine = new StringJoiner(",");
             for (String header : headers) {

@@ -16,7 +16,7 @@ public class FileHandler {
 
     public String read() throws IOException {
         if (!file.exists() || file.length() == 0) return "";
-        return Files.readString(file.toPath(), StandardCharsets.UTF_8);
+        return Files.readString(file.toPath());
     }
 
     public void write(String content) throws IOException {
@@ -24,7 +24,7 @@ public class FileHandler {
         if (parent != null) parent.mkdirs();
 
         try (Writer writer = new OutputStreamWriter(
-                new FileOutputStream(file), StandardCharsets.UTF_8)) {
+                new FileOutputStream(file))) {
             writer.write(content);
         }
     }

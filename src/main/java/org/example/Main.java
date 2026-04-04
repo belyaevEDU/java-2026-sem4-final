@@ -1,8 +1,11 @@
 package org.example;
 
-import org.example.apiInteraction.RunArgs;
 import org.example.apiInteraction.UserInteraction;
 import org.jetbrains.annotations.NotNull;
+
+import org.example.apiInteraction.RunArgs.*;
+
+import java.util.Locale;
 
 public class Main {
     static void main(@NotNull String[] args) {
@@ -14,28 +17,22 @@ public class Main {
         // automatic csv
         // automatic json
 
-        final String interactiveArg = "interactive";
-        final String automaticArg = "automatic";
-        final String csvArg = "csv";
-        final String jsonArg = "json";
-
-
         if (args.length == 0) {
             throw new IllegalArgumentException("ERROR: Run arguments not specified.");
         }
 
-        RunArgs.UserInteractionType userInteractionType;
-        RunArgs.FileType fileType = null;
+        UserInteractionType userInteractionType;
+        FileType fileType = null;
 
-        if (args[0].equals(interactiveArg) && args.length == 1) {
-            userInteractionType = RunArgs.UserInteractionType.INTERACTIVE;
-        } else if (args[0].equals(automaticArg) && args.length == 2) {
-            userInteractionType = RunArgs.UserInteractionType.AUTOMATIC;
+        if (args[0].equals(enumToString(UserInteractionType.INTERACTIVE)) && args.length == 1) {
+            userInteractionType = UserInteractionType.INTERACTIVE;
+        } else if (args[0].equals(enumToString(UserInteractionType.AUTOMATIC)) && args.length == 2) {
+            userInteractionType = UserInteractionType.AUTOMATIC;
 
-            if (args[1].equals(csvArg)) {
-                fileType = RunArgs.FileType.CSV;
-            } else if (args[1].equals(jsonArg)) {
-                fileType = RunArgs.FileType.JSON;
+            if (args[1].equals(enumToString(FileType.CSV))) {
+                fileType = FileType.CSV;
+            } else if (args[1].equals(enumToString(FileType.JSON))) {
+                fileType = FileType.JSON;
             } else {
                 throw new IllegalArgumentException("ERROR: Illegal file type argument specified.");
             }
@@ -45,5 +42,9 @@ public class Main {
 
         UserInteraction userInteraction = new UserInteraction();
         userInteraction.interact(userInteractionType, fileType);
+    }
+
+    static String enumToString(@NotNull Enum<?> enu) {
+        return enu.name().toLowerCase(Locale.ROOT);
     }
 }
