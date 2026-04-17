@@ -32,7 +32,8 @@ public class UserInteraction {
         interactiveUtils = new InteractiveUtils(this.apis);
     }
 
-    public void interact(@NotNull UserInteractionType userInteractionType, @Nullable FileType fileType) {
+    public void interact(@NotNull UserInteractionType userInteractionType, @Nullable FileType fileType,
+                         int maxConcurrent, int intervalSeconds) {
         final String apiSelectionAskMessage = "\nSelect by ID which APIs to call (\"all\" for all of them; can do several, ex.: 12): ";
         final String outputApiSelectAskMessage = "\nSelect by ID which API responses to print (\"all\" for all of them; " +
                 "can do several; \"none\" for none of them): ";
@@ -45,6 +46,7 @@ public class UserInteraction {
             if (fileType == null) {
                 fileType = this.interactiveUtils.askUserForFileType();
             }
+            if (maxConcurrent == )
         } else if (userInteractionType.equals(UserInteractionType.AUTOMATIC)) {
             userResponse = this.automaticMode(apiSelectionAskMessage);
         } else {
@@ -130,6 +132,7 @@ public class UserInteraction {
 
 
     private UserResponse interactiveMode(String apiSelectionAskMessage, String outputApiSelectAskMessage) {
+
         int[] apiIDs = this.interactiveUtils.askUserForApis(apiSelectionAskMessage);
 
         WriteMode appendToFile = this.interactiveUtils.askUserWhetherToAppend(); // if 1 append, if 0 re-write
@@ -145,5 +148,53 @@ public class UserInteraction {
         int[] cliOutputApiIDs = new int[]{}; // always empty
 
         return new UserResponse(apiIDs, appendToFile, cliOutputApiIDs);
+    }
+
+    private @NotNull Map<Integer, String> resolveAdditionalPaths(@NotNull List<ApiRecord> selectedApis, UserInteractionType type) {
+        Map<Integer, String> result = new HashMap<>();
+
+        for (ApiRecord api : selectedApis) {
+            if (!api.additionalPathNeeded()) continue;
+
+            String[] options = api.additionalPaths();
+            if (options == null || options.length == 0) {
+                throw new IllegalArgumentException(
+                        "ERROR: API '" + api.name() + "' needs an additional path "
+                                + "but none are configured in apis.json.");
+            }
+
+            String chosen;
+            if (type.equals(UserInteractionType.INTERACTIVE)) {
+                chosen = interactiveUtils.askUserForAdditionalPath(api);
+            } else {
+                chosen = options[new Random().nextInt(options.length)];
+            }
+
+            result.put(api.id(), chosen);
+        }
+
+        return result;
+    }
+
+    private @NotNull List<ApiRecord> resolveApis(int @NotNull [] apiIds) {
+        List<ApiRecord> result = new ArrayList<>();
+        for (int id : apiIds) {
+            ApiRecord found = null;
+            for (ApiRecord api : apis) {
+                if (api.id() == id) { found = api; break; }
+            }
+            if (found == null) {
+                throw new IllegalArgumentException("ERROR: API not found for id=" + id);
+            }
+            result.add(found);
+        }
+        return result;
+    }
+
+    private @NotNull CustomFormatter buildFormatter(@NotNull FileType fileType) {
+        return switch (fileType) {
+            case CSV  -> new CSVResultFormatter("");
+            case JSON -> new JSONResultFormatter("");
+        };
     }
 }
