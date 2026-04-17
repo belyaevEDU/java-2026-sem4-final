@@ -102,7 +102,7 @@ public final class ApiRecord {
                 Objects.equals(this.apiKey, that.apiKey) &&
                 Objects.equals(this.baseRequestURL, that.baseRequestURL) &&
                 this.additionalPathNeeded == that.additionalPathNeeded &&
-                Objects.equals(this.additionalPaths, that.additionalPaths) &&
+                Arrays.equals(this.additionalPaths, that.additionalPaths) &&
                 Objects.equals(this.headers, that.headers);
     }
 
