@@ -227,4 +227,44 @@ public class InteractiveUtils {
         return paths[index];
     }
 
+    public int askUserForMaxConcurrent() {
+        Scanner scanner = new Scanner(System.in);
+
+        while (true) {
+            System.out.print("Maximum number of simultaneous requests (n, e.g. 3): ");
+            String userInput = scanner.nextLine().trim();
+
+            try {
+                int value = Integer.parseInt(userInput);
+                if (value < 1) {
+                    System.out.println("Error: n must be at least 1.");
+                    continue;
+                }
+                return value;
+            } catch (NumberFormatException e) {
+                System.out.println("Error: please enter a positive integer.");
+            }
+        }
+    }
+
+    public int askUserForInterval() {
+        Scanner scanner = new Scanner(System.in);
+
+        while (true) {
+            System.out.print("Polling interval in seconds (t, e.g. 10): ");
+            String userInput = scanner.nextLine().trim();
+
+            try {
+                int value = Integer.parseInt(userInput);
+                if (value < 1) {
+                    System.out.println("Error: t must be at least 1 second.");
+                    continue;
+                }
+                return value;
+            } catch (NumberFormatException e) {
+                System.out.println("Error: please enter a positive integer.");
+            }
+        }
+    }
+
 }
