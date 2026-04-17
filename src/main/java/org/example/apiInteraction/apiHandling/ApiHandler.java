@@ -9,13 +9,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Map;
 
-public class ApiHandler {
-    private final ApiRecord apiRecord;
-
-    public ApiHandler(ApiRecord apiRecord) {
-        this.apiRecord = apiRecord;
-    }
-
+public record ApiHandler(ApiRecord apiRecord) {
     public HttpResponse<String> getResponse(@Nullable String additionalPath) {
         String url = apiRecord.baseRequestURL();
         if (this.apiRecord.additionalPathNeeded()) {
