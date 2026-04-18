@@ -214,7 +214,7 @@ public class InteractiveUtils {
             try {
                 index = Integer.parseInt(userInput);
                 index--; // since the user input starts with 1
-                if (index >= 0 && index <= paths.length) {
+                if (index >= 0 && index < paths.length) {
                     done = true;
                 } else {
                     System.out.println("Error: out of bounds!");
