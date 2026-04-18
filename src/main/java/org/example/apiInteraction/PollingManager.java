@@ -75,11 +75,6 @@ public class PollingManager {
         System.out.println("Stopped polling manager");
     }
 
-    public boolean isRunning() {
-        return scheduler != null && !scheduler.isShutdown() && !scheduler.isTerminated();
-    }
-
-
     private void pollApi(ApiRecord api) {
         try {
             semaphore.acquire();
