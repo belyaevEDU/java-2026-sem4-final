@@ -64,7 +64,7 @@ public class PollingManager {
         System.out.println("Stopping polling manager..");
         scheduler.shutdown();
         try {
-            if (!scheduler.awaitTermination(15, TimeUnit.SECONDS)) {
+            if (!scheduler.awaitTermination(20, TimeUnit.SECONDS)) {
                 scheduler.shutdownNow();
                 System.out.println("forced shutdown scheduler");
             }
