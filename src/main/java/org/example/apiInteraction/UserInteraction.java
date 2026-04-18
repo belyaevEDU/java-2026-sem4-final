@@ -32,14 +32,17 @@ public class UserInteraction {
     public void interact() {
         final String apiSelectionMsg = "\nSelect by ID which APIs to call " +
                 "(\"all\" for all of them; can do several, ex.: 12): ";
+        final String apiCliOutputMsg = "\nSelect by ID which APIs to output " +
+                "(\"all\" for all of them; can do several, ex.: 12): ";
 
         int[] apiIDs = interactiveUtils.askUserForApis(apiSelectionMsg);
+        int[] outputApiIDs = interactiveUtils.askUserForApis(apiCliOutputMsg, apiIDs);
         WriteMode writeMode = interactiveUtils.askUserWhetherToAppend();
-        FileType fileType   = interactiveUtils.askUserForFileType();
+        FileType fileType = interactiveUtils.askUserForFileType();
         int n = interactiveUtils.askUserForMaxConcurrent();
         int t = interactiveUtils.askUserForInterval();
 
-        UserResponse userResponse = new UserResponse(apiIDs, writeMode, new int[]{});
+        UserResponse userResponse = new UserResponse(apiIDs, writeMode, outputApiIDs);
         startPolling(userResponse, fileType, n, t, UserInteractionType.INTERACTIVE);
     }
 
