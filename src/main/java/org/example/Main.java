@@ -23,7 +23,7 @@ public class Main {
 
         UserInteraction userInteraction = new UserInteraction();
 
-        FileType fileType = null;
+        FileType fileType;
 
         if (args[0].equals(enumToString(UserInteractionType.INTERACTIVE)) && args.length == 1) {
             userInteraction.interact();
