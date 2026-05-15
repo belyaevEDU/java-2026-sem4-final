@@ -60,7 +60,7 @@ public class UserInteraction {
                               int intervalSeconds, UserInteractionType type) {
         final String defaultFileNameFormat = "output.%s";
 
-        List<ApiRecord> selectedApis = resolveApis(userResponse.apiIdsToCall());
+        Set<ApiRecord> selectedApis = resolveApis(userResponse.apiIdsToCall());
         Map<Integer, String> additionalPaths = resolveAdditionalPaths(selectedApis, type);
 
         String fileName = String.format(defaultFileNameFormat, fileType.toString().toLowerCase());
@@ -119,7 +119,7 @@ public class UserInteraction {
         }
     }
 
-    private @NotNull Map<Integer, String> resolveAdditionalPaths(@NotNull List<ApiRecord> selectedApis, UserInteractionType type) {
+    private @NotNull Map<Integer, String> resolveAdditionalPaths(@NotNull Set<ApiRecord> selectedApis, UserInteractionType type) {
         Map<Integer, String> result = new HashMap<>();
 
         for (ApiRecord api : selectedApis) {
@@ -145,8 +145,8 @@ public class UserInteraction {
         return result;
     }
 
-    private @NotNull List<ApiRecord> resolveApis(int @NotNull [] apiIds) {
-        List<ApiRecord> result = new ArrayList<>();
+    private @NotNull Set<ApiRecord> resolveApis(int @NotNull [] apiIds) {
+        Set<ApiRecord> result = new HashSet<>();
         for (int id : apiIds) {
             ApiRecord found = null;
             for (ApiRecord api : apis) {

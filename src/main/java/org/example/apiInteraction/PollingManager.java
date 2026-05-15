@@ -10,16 +10,14 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.TimeUnit;
+import java.util.Set;
+import java.util.concurrent.*;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class PollingManager {
     private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm:ss");
 
-    private final List<ApiRecord> apis;
+    private final Set<ApiRecord> apis;
     private final Map<Integer, String> additionalPaths;
     private final int maxConcurrent;
     private final long intervalSeconds;
@@ -31,9 +29,12 @@ public class PollingManager {
     private volatile String currentContent;
 
     private ScheduledExecutorService scheduler;
+    private ExecutorService workerPool;
 
-    public PollingManager(List<ApiRecord> apis, Map<Integer, String> additionalPaths, int maxConcurrent, long intervalSeconds,
-                          CustomFormatter formatter, FileHandler fileHandler, String initialContent) {
+    public PollingManager(Set<ApiRecord> apis, Map<Integer, String> additionalPaths,
+                          int maxConcurrent, long intervalSeconds,
+                          CustomFormatter formatter, FileHandler fileHandler,
+                          String initialContent) {
         this.apis = apis;
         this.additionalPaths = additionalPaths;
         this.maxConcurrent = maxConcurrent;
@@ -41,38 +42,51 @@ public class PollingManager {
         this.formatter = formatter;
         this.fileHandler = fileHandler;
         this.currentContent = initialContent;
-
         this.semaphore = new Semaphore(maxConcurrent);
     }
 
     public void start() {
         scheduler = Executors.newScheduledThreadPool(apis.size());
+        workerPool = Executors.newCachedThreadPool();
 
         for (ApiRecord api : apis) {
-            scheduler.scheduleWithFixedDelay(() -> pollApi(api), 0, intervalSeconds, TimeUnit.SECONDS);
+            if (intervalSeconds == 0) {
+                submitContinuous(api);
+            } else {
+                scheduler.scheduleAtFixedRate(() -> workerPool.submit(() -> pollApi(api)),
+                        0, intervalSeconds, TimeUnit.SECONDS
+                );
+            }
         }
 
-        System.out.println("Started polling manager with " + apis.size() + "APIs, max concurrent queries = "
-                + maxConcurrent + ", interval = " + intervalSeconds + "s.");
+        System.out.println("Started polling manager: apis=" + apis.size() + ", maxConcurrent=" + maxConcurrent
+                + ", interval=" + intervalSeconds + "s.");
     }
 
     public void stop() {
-        if (scheduler == null || scheduler.isShutdown()) {
-            return;
-        }
+        if (scheduler == null || scheduler.isShutdown()) return;
 
-        System.out.println("Stopping polling manager..");
+        System.out.println("Stopping polling manager...");
         scheduler.shutdown();
+        workerPool.shutdown();
         try {
-            if (!scheduler.awaitTermination(20, TimeUnit.SECONDS)) {
-                scheduler.shutdownNow();
-                System.out.println("forced shutdown scheduler");
-            }
+            if (!scheduler.awaitTermination(20, TimeUnit.SECONDS)) scheduler.shutdownNow();
+            if (!workerPool.awaitTermination(20, TimeUnit.SECONDS)) workerPool.shutdownNow();
         } catch (InterruptedException e) {
             scheduler.shutdownNow();
+            workerPool.shutdownNow();
             Thread.currentThread().interrupt();
         }
-        System.out.println("Stopped polling manager");
+        System.out.println("Stopped polling manager.");
+    }
+
+    private void submitContinuous(ApiRecord api) {
+        workerPool.submit(() -> {
+            pollApi(api);
+            if (!workerPool.isShutdown()) {
+                submitContinuous(api);
+            }
+        });
     }
 
     private void pollApi(ApiRecord api) {
@@ -85,7 +99,6 @@ public class PollingManager {
 
         try {
             String additionalPath = additionalPaths.get(api.id());
-
             ApiHandler handler = new ApiHandler(api);
             HttpResponse<String> response = handler.getResponse(additionalPath);
 
@@ -106,7 +119,6 @@ public class PollingManager {
 
     private void writeResult(ApiRecord api, String responseBody) {
         writeLock.lock();
-
         try {
             formatter.setSourceName(api.name());
             String formatted = formatter.format(responseBody, currentContent);

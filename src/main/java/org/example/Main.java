@@ -36,8 +36,8 @@ public class Main {
                 throw new IllegalArgumentException("ERROR: Illegal file type argument specified.");
             }
 
-            int maxConcurrent = validatePositiveInt(args[2]);
-            int intervalSeconds = validatePositiveInt(args[3]);
+            int maxConcurrent = validateNonNegativeInt(args[2]);
+            int intervalSeconds = validateNonNegativeInt(args[3]);
 
             userInteraction.interact(fileType, maxConcurrent, intervalSeconds);
         } else {
@@ -50,11 +50,11 @@ public class Main {
         return enu.name().toLowerCase(Locale.ROOT);
     }
 
-    private static int validatePositiveInt(String raw) {
+    private static int validateNonNegativeInt(String raw) {
         try {
             int value = Integer.parseInt(raw);
-            if (value <= 0) {
-                throw new IllegalArgumentException("ERROR: integer arg parameter must be positive");
+            if (value < 0) {
+                throw new IllegalArgumentException("ERROR: integer arg parameter must be non-negative");
             }
             return value;
         } catch (NumberFormatException e) {
