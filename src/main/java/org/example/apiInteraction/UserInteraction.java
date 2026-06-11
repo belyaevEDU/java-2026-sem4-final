@@ -1,9 +1,11 @@
 package org.example.apiInteraction;
 
+import org.example.apiInteraction.RunArgs.FileType;
+import org.example.apiInteraction.RunArgs.UserInteractionType;
+import org.example.apiInteraction.apiHandling.ApiRecord;
 import org.example.apiInteraction.cliInteraction.InteractiveUtils;
 import org.example.apiInteraction.cliInteraction.UserResponse;
 import org.example.apiInteraction.cliInteraction.WriteMode;
-import org.example.apiInteraction.apiHandling.ApiRecord;
 import org.example.apiInteraction.resultFormatting.CSVResultFormatter;
 import org.example.apiInteraction.resultFormatting.CustomFormatter;
 import org.example.apiInteraction.resultFormatting.JSONResultFormatter;
@@ -13,8 +15,6 @@ import tools.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-
-import org.example.apiInteraction.RunArgs.*;
 
 public class UserInteraction {
     private final ApiRecord[] apis;
@@ -27,6 +27,12 @@ public class UserInteraction {
         this.apis = objectMapper.readValue(new File(FILE_PATH), ApiRecord[].class);
 
         interactiveUtils = new InteractiveUtils(this.apis);
+    }
+
+    // Package-private constructor for unit tests. Bypasses file I/O.
+    UserInteraction(ApiRecord[] apis, InteractiveUtils interactiveUtils) {
+        this.apis = apis;
+        this.interactiveUtils = interactiveUtils;
     }
 
     public void interact() {
@@ -119,7 +125,7 @@ public class UserInteraction {
         }
     }
 
-    private @NotNull Map<Integer, String> resolveAdditionalPaths(@NotNull Set<ApiRecord> selectedApis, UserInteractionType type) {
+    @NotNull Map<Integer, String> resolveAdditionalPaths(@NotNull Set<ApiRecord> selectedApis, UserInteractionType type) {
         Map<Integer, String> result = new HashMap<>();
 
         for (ApiRecord api : selectedApis) {
@@ -145,7 +151,7 @@ public class UserInteraction {
         return result;
     }
 
-    private @NotNull Set<ApiRecord> resolveApis(int @NotNull [] apiIds) {
+    @NotNull Set<ApiRecord> resolveApis(int @NotNull [] apiIds) {
         Set<ApiRecord> result = new HashSet<>();
         for (int id : apiIds) {
             ApiRecord found = null;
@@ -160,7 +166,7 @@ public class UserInteraction {
         return result;
     }
 
-    private @NotNull CustomFormatter buildFormatter(@NotNull FileType fileType) {
+    @NotNull CustomFormatter buildFormatter(@NotNull FileType fileType) {
         return switch (fileType) {
             case CSV -> new CSVResultFormatter("");
             case JSON -> new JSONResultFormatter("");
