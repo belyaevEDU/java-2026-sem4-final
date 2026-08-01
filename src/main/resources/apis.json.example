@@ -1,0 +1,23 @@
+[
+  {
+    "id": 0,
+    "name": "The Movie Database",
+    "key_needed": true,
+    "API_KEY": "key",
+    "base_request_url": "https://api.themoviedb.org/3/movie/",
+    "additional_path_needed": true,
+    "additional_paths": ["popular", "now_playing", "top_rated", "upcoming"],
+    "headers": {
+      "accept": "application/json",
+      "Authorization": "Bearer "
+    }
+  },
+  {
+    "id": 1,
+    "name": "ExchangeRate API",
+    "key_needed": false,
+    "base_request_url": "https://v6.exchangerate-api.com/v6/key/latest/",
+    "additional_path_needed": true,
+    "additional_paths": ["USD", "EUR", "RUB"]
+  }
+]
