@@ -37,6 +37,8 @@ jobs:
           generate-coverage-badge: true
           generate-branches-badge: false
           coverage-badge-filename: jacoco.svg
+          colors: 'green red'
+          intervals: '70'
 
       - name: Add badge to gh pages artifact
         run: cp .github/badges/jacoco.svg target/site/jacoco/jacoco.svg
