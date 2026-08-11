@@ -23,26 +23,39 @@ jobs:
           distribution: temurin
           java-version: '21'
 
-      - name: Create apis.json from template
+      - name: apis.json.example -> apis.json
         run: cp src/main/resources/apis.json.example src/main/resources/apis.json
 
       - name: Build & test
         run: ./mvnw --batch-mode --no-transfer-progress verify
 
-      - name: Upload JaCoCo report
+      - name: Upload JaCoCo coverage report artifact
         uses: actions/upload-artifact@v4
         with:
           name: jacoco-report
           path: target/site/jacoco
           if-no-files-found: error
 
+  deploy:
+    name: Deploy coverage to GitHub Pages
+    if: github.ref == 'refs/heads/main'
+    needs: test
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Download JaCoCo report
+        uses: actions/download-artifact@v4
+        with:
+          name: jacoco-report
+          path: target/site/jacoco
+
       - name: Publish coverage to GitHub Pages
-        if: github.ref == 'refs/heads/main'
         uses: actions/upload-pages-artifact@v3
         with:
           path: target/site/jacoco
 
       - name: Deploy coverage to GitHub Pages
-        if: github.ref == 'refs/heads/main'
         id: deployment
         uses: actions/deploy-pages@v4
