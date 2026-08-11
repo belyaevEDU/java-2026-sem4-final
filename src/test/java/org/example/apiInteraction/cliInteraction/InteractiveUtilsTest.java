@@ -65,17 +65,31 @@ class InteractiveUtilsTest {
     }
 
     @Test
-    void askUserForApis_multipleDigits_returnsAll() {
-        feedInput("012\n");
+    void askUserForApis_commaSeparated_returnsIds() {
+        feedInput("0,1,2\n");
         int[] result = utils.askUserForApis("Pick: ");
         assertArrayEquals(new int[]{0, 1, 2}, result);
     }
 
     @Test
-    void askUserForApis_all_returnsAllApiIndices() {
+    void askUserForApis_multiDigitIds_supported() {
+        feedInput("10,13\n");
+        int[] result = utils.askUserForApis("Pick: ");
+        assertArrayEquals(new int[]{10, 13}, result);
+    }
+
+    @Test
+    void askUserForApis_spacesAroundComma_accepted() {
+        feedInput("1, 2\n");
+        int[] result = utils.askUserForApis("Pick: ");
+        assertArrayEquals(new int[]{1, 2}, result);
+    }
+
+    @Test
+    void askUserForApis_all_returnsAllApiIds() {
         feedInput("all\n");
         int[] result = utils.askUserForApis("Pick: ");
-        assertEquals(3, result.length);
+        assertArrayEquals(new int[]{0, 1, 2}, result);
     }
 
     @Test
@@ -92,18 +106,22 @@ class InteractiveUtilsTest {
         assertArrayEquals(new int[]{0}, result);
     }
 
-    /** Space between digits triggers NumberFormatException on ' '; loop retries. */
     @Test
-    void askUserForApis_spaceBetweenDigits_retriesThenAccepts() {
-        feedInput("1 2\n12\n");
+    void askUserForApis_spacesWithoutComma_retriesThenAccepts() {
+        feedInput("1 2\n1,2\n");
         assertArrayEquals(new int[]{1, 2}, utils.askUserForApis("Pick: "));
     }
 
-    /** Single space is not isEmpty() but parseInt(" ") throws; loop retries. */
     @Test
     void askUserForApis_singleSpace_retriesThenAccepts() {
         feedInput(" \n0\n");
         assertArrayEquals(new int[]{0}, utils.askUserForApis("Pick: "));
+    }
+
+    @Test
+    void askUserForApis_trailingComma_retriesThenAccepts() {
+        feedInput("1,\n2\n");
+        assertArrayEquals(new int[]{2}, utils.askUserForApis("Pick: "));
     }
 
     // askUserForApis (with filter)
@@ -116,10 +134,10 @@ class InteractiveUtilsTest {
     }
 
     @Test
-    void askUserForApisFiltered_all_returnsAllIndices() {
+    void askUserForApisFiltered_all_returnsAllApiIds() {
         feedInput("all\n");
         int[] result = utils.askUserForApis("Pick output: ", new int[]{0, 1, 2});
-        assertEquals(3, result.length);
+        assertArrayEquals(new int[]{0, 1, 2}, result);
     }
 
     @Test

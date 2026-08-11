@@ -37,20 +37,13 @@ public class InteractiveUtils {
             }
 
             if (userInput.equals(allApisUserResponse)) {
-                array = new int[this.apis.length];
-                for (int i = 0; i < this.apis.length; i++) {
-                    array[i] = i;
-                }
+                array = Arrays.stream(apis).mapToInt(ApiRecord::id).toArray();
                 done = true;
                 continue;
             }
 
-            array = new int[userInput.length()];
-            char[] charArray = userInput.toCharArray();
             try {
-                for (int i = 0; i < userInput.length(); i++) {
-                    array[i] = Integer.parseInt(String.valueOf(charArray[i]));
-                }
+                array = parseApiIds(userInput);
                 done = true;
             } catch (NumberFormatException e) {
                 System.out.println("Error: non-numeric input.\n");
@@ -87,10 +80,7 @@ public class InteractiveUtils {
                     continue;
                 }
                 case allApisUserResponse -> {
-                    array = new int[this.apis.length];
-                    for (int i = 0; i < this.apis.length; i++) {
-                        array[i] = i;
-                    }
+                    array = Arrays.stream(apis).mapToInt(ApiRecord::id).toArray();
                     done = true;
                     continue;
                 }
@@ -101,12 +91,8 @@ public class InteractiveUtils {
                 }
             }
 
-            array = new int[userInput.length()];
-            char[] charArray = userInput.toCharArray();
             try {
-                for (int i = 0; i < userInput.length(); i++) {
-                    array[i] = Integer.parseInt(String.valueOf(charArray[i]));
-                }
+                array = parseApiIds(userInput);
                 done = true;
             } catch (NumberFormatException e) {
                 System.out.println("Error: non-numeric input.\n");
@@ -114,6 +100,19 @@ public class InteractiveUtils {
         }
 
         return array;
+    }
+
+    private int[] parseApiIds(String userInput) throws NumberFormatException {
+        String[] parts = userInput.split(",", -1);
+        int[] ids = new int[parts.length];
+        for (int i = 0; i < parts.length; i++) {
+            String token = parts[i].trim();
+            if (token.isEmpty()) {
+                throw new NumberFormatException("empty ID given");
+            }
+            ids[i] = Integer.parseInt(token);
+        }
+        return ids;
     }
 
     public WriteMode askUserWhetherToAppend() {
