@@ -37,9 +37,9 @@ public class UserInteraction {
 
     public void interact() {
         final String apiSelectionMsg = "\nSelect by ID which APIs to call " +
-                "(\"all\" for all of them; can do several, ex.: 12): ";
+                "(\"all\" for all of them; can do several, ex.: 1,2,12): ";
         final String apiCliOutputMsg = "\nSelect by ID which APIs to output " +
-                "(\"all\" for all of them; can do several, ex.: 12): ";
+                "(\"all\" for all of them; can do several, ex.: 1,2,12): ";
 
         int[] apiIDs = interactiveUtils.askUserForApis(apiSelectionMsg);
         int[] outputApiIDs = interactiveUtils.askUserForApis(apiCliOutputMsg, apiIDs);
